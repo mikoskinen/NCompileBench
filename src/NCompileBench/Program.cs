@@ -37,7 +37,7 @@ namespace NCompileBench
             var directoryName = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             var artifactsPath = new DirectoryInfo(directoryName);
             var summary = BenchmarkRunner.Run<CompilationBenchmarks>(BenchmarkConfig.Create(artifactsPath));
-
+            
             cts.Cancel();
 
             await Task.Delay(TimeSpan.FromMilliseconds(750));
@@ -51,11 +51,13 @@ namespace NCompileBench
                 .ResultStatistics;
 
             var nonConcurrentTimespan = TimeSpan.FromMilliseconds(TimeUnit.Convert(nonConcurrentResult.Mean, TimeUnit.Nanosecond, TimeUnit.Millisecond));
+
             // Console.WriteLine("Non concurrent result: " + nonConcurrentTimespan.TotalSeconds);
 
             var concurrentTimespan =
                 TimeSpan.FromMilliseconds(TimeUnit.Convert(concurrentResult.Mean, TimeUnit.Nanosecond,
                     TimeUnit.Millisecond));
+
             // Console.WriteLine("Concurrent result: " + concurrentTimespan.TotalSeconds);
 
             var scoreMulti = CalculateScore(concurrentTimespan);
@@ -66,7 +68,8 @@ namespace NCompileBench
             Console.WriteLine("System information:");
             Console.WriteLine(summary.HostEnvironmentInfo.OsVersion.Value);
 
-            Console.WriteLine($"{summary.HostEnvironmentInfo.CpuInfo.Value.ProcessorName}, {summary.HostEnvironmentInfo.CpuInfo.Value.PhysicalProcessorCount} CPU, {summary.HostEnvironmentInfo.CpuInfo.Value.LogicalCoreCount} logical and {summary.HostEnvironmentInfo.CpuInfo.Value.PhysicalCoreCount} physical cores");
+            Console.WriteLine(
+                $"{summary.HostEnvironmentInfo.CpuInfo.Value.ProcessorName}, {summary.HostEnvironmentInfo.CpuInfo.Value.PhysicalProcessorCount} CPU, {summary.HostEnvironmentInfo.CpuInfo.Value.LogicalCoreCount} logical and {summary.HostEnvironmentInfo.CpuInfo.Value.PhysicalCoreCount} physical cores");
             Console.WriteLine("****");
             Console.WriteLine($"More detailed results are available from {Path.Combine(directoryName, "results")}");
         }
@@ -83,17 +86,17 @@ namespace NCompileBench
                 {
                     return;
                 }
-                
+
                 Console.WriteLine("****");
                 Console.WriteLine("Comparison results:");
 
-                foreach(var benchmarkLine in content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var benchmarkLine in content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     var parts = benchmarkLine.Split("##", StringSplitOptions.RemoveEmptyEntries);
                     var cpu = Truncate(parts[0], 20);
                     var multiScore = int.Parse(parts[1]);
                     var singleScore = int.Parse(parts[2]);
-                    
+
                     Console.WriteLine($"{cpu.PadRight(20)}: {multiScore} ({singleScore})");
                 }
             }
@@ -110,7 +113,7 @@ namespace NCompileBench
 
         private static async Task Setup()
         {
-            var codePackage = "CodeAnalysisReproWithAnalyzers.zip";
+            var codePackage = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "CodeAnalysisReproWithAnalyzers.zip");
             var sourceDownloadDir = Path.Combine(AppContext.BaseDirectory, "benchmarkedCodes");
             var sourceDir = Path.Combine(sourceDownloadDir, "CodeAnalysisReproWithAnalyzers");
 
@@ -132,6 +135,7 @@ namespace NCompileBench
                 counter++;
 
                 Console.SetCursorPosition(0, Console.CursorTop);
+
                 switch (counter % 3)
                 {
                     case 0:
@@ -158,7 +162,7 @@ namespace NCompileBench
                 Thread.Sleep(TimeSpan.FromMilliseconds(500));
             }
         }
-        
+
         private static string Truncate(string value, int maxChars)
         {
             return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "...";

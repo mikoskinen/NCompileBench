@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ncompilebench</ToolCommandName>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageOutputPath>./nupkg</PackageOutputPath>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Mikael Koskinen</Authors>
     <Description>Compilation benchmark for Windows. How fast can your computer compile .NET code?</Description>
     <Product>NCompileBench</Product>
