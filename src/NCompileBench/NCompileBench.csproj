@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>ncompilebench</ToolCommandName>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <Authors>Mikael Koskinen</Authors>
+    <Description>Compilation benchmark for Windows. How fast can your computer compile .NET code?</Description>
+    <Product>NCompileBench</Product>
+    <RepositoryUrl>https://github.com/mikoskinen/NCompileBench</RepositoryUrl>
+    <Copyright>2020 Mikael Koskinen</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="2.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.12.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="CodeAnalysisReproWithAnalyzers.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
