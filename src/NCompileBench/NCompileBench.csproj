@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!--    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ncompilebench</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -15,19 +14,17 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+    <Version>1.0.1-alpha.0.2</Version>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.12.1" />
   </ItemGroup>
-  
   <ItemGroup>
     <None Update="CodeAnalysisReproWithAnalyzers.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
