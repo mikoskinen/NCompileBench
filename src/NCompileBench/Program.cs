@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Running;
@@ -26,18 +25,29 @@ namespace NCompileBench
             Console.WriteLine($"Uses BenchmarkDotNet: https://github.com/dotnet/BenchmarkDotNet (MIT)");
             Console.WriteLine($"Compiles source code available from https://github.com/dotnet/roslyn/releases/tag/perf-assets-v1");
             Console.WriteLine("****");
+            Console.WriteLine($"Run with -verbose flag to see details during the benchmark");
+            Console.WriteLine("****");
 
             await Setup();
 
             Console.WriteLine("Starting benchmark. Please sit tight, this may take up-to 10 minutes.");
 
+            var verbose = args?.Any(x => string.Equals(x, "-verbose", StringComparison.InvariantCultureIgnoreCase)) == true;
+
             var cts = new CancellationTokenSource();
-            ThreadPool.QueueUserWorkItem(Spin, cts.Token);
+
+            if (!verbose)
+            {
+                ThreadPool.QueueUserWorkItem(Spin, cts.Token);
+            }
 
             var directoryName = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             var artifactsPath = new DirectoryInfo(directoryName);
-            var summary = BenchmarkRunner.Run<CompilationBenchmarks>(BenchmarkConfig.Create(artifactsPath));
+
+            var config = BenchmarkConfig.Create(artifactsPath, verbose);
             
+            var summary = BenchmarkRunner.Run<CompilationBenchmarks>(config);
+
             cts.Cancel();
 
             await Task.Delay(TimeSpan.FromMilliseconds(750));
@@ -46,25 +56,19 @@ namespace NCompileBench
 
             var nonConcurrentResult = summary.Reports.Single(x => (bool) x.BenchmarkCase.Parameters[0].Value == false)
                 .ResultStatistics;
-
             var concurrentResult = summary.Reports.Single(x => (bool) x.BenchmarkCase.Parameters[0].Value == true)
                 .ResultStatistics;
-
+            
             var nonConcurrentTimespan = TimeSpan.FromMilliseconds(TimeUnit.Convert(nonConcurrentResult.Mean, TimeUnit.Nanosecond, TimeUnit.Millisecond));
-
-            // Console.WriteLine("Non concurrent result: " + nonConcurrentTimespan.TotalSeconds);
-
             var concurrentTimespan =
                 TimeSpan.FromMilliseconds(TimeUnit.Convert(concurrentResult.Mean, TimeUnit.Nanosecond,
                     TimeUnit.Millisecond));
 
-            // Console.WriteLine("Concurrent result: " + concurrentTimespan.TotalSeconds);
-
             var scoreMulti = CalculateScore(concurrentTimespan);
             var scoreSingle = CalculateScore(nonConcurrentTimespan);
             Console.WriteLine($"NCompileBench Score: {scoreMulti} (non-concurrent score: {scoreSingle})");
-            Console.WriteLine("****");
             await DisplayComparisons();
+            Console.WriteLine("****");
             Console.WriteLine("System information:");
             Console.WriteLine(summary.HostEnvironmentInfo.OsVersion.Value);
 
