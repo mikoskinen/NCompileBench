@@ -1,5 +1,5 @@
-echo dotnet tool update -g minver-cli
-echo dotnet tool update -g dotnet-property
+dotnet tool update -g minver-cli
+dotnet tool update -g dotnet-property
 $curVersion = minver -m 1.0 -t v
 $suffix = Get-Date -format "yyMMddHHmmss"
 
