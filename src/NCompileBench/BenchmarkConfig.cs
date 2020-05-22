@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
 using System.Reflection;
 using BenchmarkDotNet.Columns;
@@ -21,7 +22,7 @@ namespace NCompileBench
                 .WithRuntime(CoreRuntime.Core31)
                 .WithPlatform(Platform.X64)
                 .WithMaxRelativeError(0.01)
-                .WithToolchain(InProcessEmitToolchain.Instance)
+                .WithToolchain(new InProcessEmitToolchain(TimeSpan.FromHours(3), true))
                 .DontEnforcePowerPlan();
 
             // See https://github.com/dotnet/roslyn/issues/42393

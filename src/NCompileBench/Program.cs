@@ -18,14 +18,13 @@ namespace NCompileBench
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
             Console.WriteLine($"Initializing NCompileBench. Version: {fileVersionInfo.ProductVersion}");
+            Console.WriteLine($"Run with -verbose flag to see more details during the benchmark");
             Console.WriteLine("****");
             Console.WriteLine($"Created by Mikael Koskinen: https://mikaelkoskinen.net");
             Console.WriteLine($"Source code available from https://github.com/mikoskinen/NCompileBench (MIT)");
             Console.WriteLine($"Based on .NET Performance repository: https://github.com/dotnet/performance by Microsoft (MIT)");
             Console.WriteLine($"Uses BenchmarkDotNet: https://github.com/dotnet/BenchmarkDotNet (MIT)");
             Console.WriteLine($"Compiles source code available from https://github.com/dotnet/roslyn/releases/tag/perf-assets-v1");
-            Console.WriteLine("****");
-            Console.WriteLine($"Run with -verbose flag to see details during the benchmark");
             Console.WriteLine("****");
 
             await Setup();
@@ -104,8 +103,9 @@ namespace NCompileBench
                     Console.WriteLine($"{cpu.PadRight(20)}: {multiScore} ({singleScore})");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
+                // ignored
             }
         }
 
