@@ -26,6 +26,22 @@ NCompileBench
 
 Note that the benchmark starts automatically.
 
+## Submitting results
+
+The results "database" is available as a Gist: https://gist.github.com/mikoskinen/2560a85bc59ef6baad20d371ab0db6f2#file-ncompilebench-json-results
+
+After running the benchmark, you can submit your score by running:
+
+```
+NCompileBench -submit
+```
+
+To just view the results without running the benchmark you can run:
+
+```
+NCompileBench -scores
+```
+
 ## Acknowledgements
 
 The source code is based on the [.NET Performance repository](https://github.com/dotnet/performance) by Microsoft (MIT-licensed).
