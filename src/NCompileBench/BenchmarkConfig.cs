@@ -16,7 +16,7 @@ namespace NCompileBench
     public static class BenchmarkConfig
     {
         public static IConfig Create(
-            DirectoryInfo artifactsPath, bool verbose)
+            DirectoryInfo artifactsPath, bool silent)
         {
             var job = Job.Default
                 .WithRuntime(CoreRuntime.Core31)
@@ -40,7 +40,7 @@ namespace NCompileBench
                     .WithMaxParameterColumnWidth(
                         36));
 
-            if (verbose == false)
+            if (silent)
             {
                 var loggersField = typeof(ManualConfig).GetField("loggers",
                     BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
