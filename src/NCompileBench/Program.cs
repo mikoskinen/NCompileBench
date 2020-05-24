@@ -23,9 +23,10 @@ namespace NCompileBench
                 var fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
                 Console.WriteLine($"Initializing NCompileBench. Version: {fileVersionInfo.ProductVersion}");
-                Console.WriteLine($"Run with -silent flag to see less details during the benchmark");
+                Console.WriteLine($"Run with -verbose flag to see more details during the benchmark");
                 Console.WriteLine($"Run with -submit to submit your latest benchmark");
                 Console.WriteLine($"Run with -scores to view the online results without running the benchmark");
+                Console.WriteLine($"Run with -nomaxiterations to get even more accurate results. Please view readme for more details");
                 Console.WriteLine("****");
                 Console.WriteLine($"Created by Mikael Koskinen: https://mikaelkoskinen.net");
                 Console.WriteLine($"Source code available from https://github.com/mikoskinen/NCompileBench (MIT)");
@@ -51,25 +52,26 @@ namespace NCompileBench
                     return;
                 }
 
-                Console.WriteLine("Setting up the benchmark.");
+                Console.WriteLine("Setting up the benchmark");
 
                 await Setup();
 
-                Console.WriteLine("Starting benchmark in 5 seconds. Please sit tight, this may take up-to 10 minutes.");
+                Console.WriteLine("Starting benchmark in 5 seconds. Please sit tight, this may take up-to 10 minutes");
 
                 await Task.Delay(TimeSpan.FromSeconds(5));
             
-                var silent = args?.Any(x => string.Equals(x, "-silent", StringComparison.InvariantCultureIgnoreCase)) == true;
+                var verbose = args?.Any(x => string.Equals(x, "-verbose", StringComparison.InvariantCultureIgnoreCase)) == true;
+                var noMaxIterations = args?.Any(x => string.Equals(x, "-nomaxiterations", StringComparison.InvariantCultureIgnoreCase)) == true;
 
                 var cts = new CancellationTokenSource();
 
-                if (silent)
+                if (verbose == false)
                 {
                     ThreadPool.QueueUserWorkItem(Spin, cts.Token);
                 }
 
                 var artifactsPath = new DirectoryInfo(directoryName);
-                var config = BenchmarkConfig.Create(artifactsPath, silent);
+                var config = BenchmarkConfig.Create(artifactsPath, verbose, noMaxIterations);
 
                 var summary = BenchmarkRunner.Run<CompilationBenchmarks>(config);
                 cts.Cancel();
@@ -223,7 +225,15 @@ namespace NCompileBench
 
                 foreach (var result in results)
                 {
-                    var systemText = $"{result.HardwareInfo.SystemFamily} {result.HardwareInfo.SystemSku}";
+                    var systemText = $"{result.HardwareInfo.SystemSku}";
+
+                    if (string.IsNullOrWhiteSpace(systemText))
+                    {
+                        systemText = result.HardwareInfo.SystemFamily;
+                    }
+
+                    systemText = systemText.Replace("_", " ");
+                        
                     var cpuText = $"{result.HardwareInfo.Cpu.Name}, {result.HardwareInfo.Cpu.Count} CPU, {result.HardwareInfo.Cpu.NumberOfLogicalProcessors} logical and {result.HardwareInfo.Cpu.NumberOfCores} physical cores";
 
                     table.AddRow(systemText, cpuText, $"{result.Score} ({result.SingleCoreScore})");
@@ -261,43 +271,37 @@ namespace NCompileBench
         {
             var counter = 0;
             var token = (CancellationToken) obj;
-
+            
             while (token.IsCancellationRequested == false)
             {
                 counter++;
-
-                Console.SetCursorPosition(0, Console.CursorTop);
-
+            
                 switch (counter % 3)
                 {
                     case 0:
-                        Console.Write(".   ");
+                        Console.Write("\r.   ");
                         counter = 0;
-
+            
                         break;
                     case 1:
-                        Console.Write("..  ");
-
+                        Console.Write("\r..  ");
+            
                         break;
                     case 2:
-                        Console.Write("... ");
-
+                        Console.Write("\r... ");
+            
                         break;
                     case 3:
-                        Console.Write("....");
-
+                        Console.Write("\r....");
+            
                         break;
                 }
-
-                Console.SetCursorPosition(0, Console.CursorTop);
-
+            
                 Thread.Sleep(TimeSpan.FromMilliseconds(500));
             }
-        }
 
-        private static string Truncate(string value, int maxChars)
-        {
-            return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "...";
+            Console.SetCursorPosition(0, Console.CursorTop);
         }
+        
     }
 }

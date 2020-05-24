@@ -30,6 +30,7 @@ namespace NCompileBench
             public uint SpeedMHz { get; set; }
             public uint NumberOfCores { get; set; }
             public uint NumberOfLogicalProcessors { get; set; }
+            public string Architecture { get; set; }
         }
 
         public class OsInfo
@@ -37,6 +38,7 @@ namespace NCompileBench
             public string Name { get; set; }
             public string Version { get; set; }
             public string BuildNumber { get; set; }
+            public string Architecture { get; set; }
         }
 
         public static HardwareInfo Get()
@@ -102,7 +104,8 @@ namespace NCompileBench
             {
                 Name = osData.GetValue<string>("Caption"),
                 Version = osData.GetValue<string>("Version"),
-                BuildNumber = osData.GetValue<string>("BuildNumber")
+                BuildNumber = osData.GetValue<string>("BuildNumber"),
+                Architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString()
             };
         }
 
@@ -145,11 +148,11 @@ namespace NCompileBench
             var name = cpuData.GetValue<string>("Name")?.Trim();
             var speedMHz = cpuData.GetValue<uint>("MaxClockSpeed");
             var cores = cpuData.GetValue<uint>("NumberOfCores");
-            var threads = cpuData.GetValue<uint>("NumberOfCores");
+            var threads = cpuData.GetValue<uint>("NumberOfLogicalProcessors");
 
             var cpu = new CpuInfo()
             {
-                Name = name, SpeedMHz = speedMHz, NumberOfCores = cores, NumberOfLogicalProcessors = threads
+                Name = name, SpeedMHz = speedMHz, NumberOfCores = cores, NumberOfLogicalProcessors = threads, Architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString()
             };
 
             result.Cpu = cpu;
