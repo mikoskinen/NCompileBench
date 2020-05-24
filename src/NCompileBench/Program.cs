@@ -225,16 +225,14 @@ namespace NCompileBench
 
                 foreach (var result in results.OrderByDescending(x => x.Score))
                 {
-                    var systemText = $"{result.HardwareInfo.SystemSku}";
+                    var systemText = $"{result.HardwareInfo.Model}";
 
                     if (string.IsNullOrWhiteSpace(systemText))
                     {
                         systemText = result.HardwareInfo.SystemFamily;
                     }
 
-                    systemText = systemText.Replace("_", " ");
-                        
-                    var cpuText = $"{result.HardwareInfo.Cpu.Name}, {result.HardwareInfo.Cpu.Count} CPU, {result.HardwareInfo.Cpu.NumberOfLogicalProcessors} logical and {result.HardwareInfo.Cpu.NumberOfCores} physical cores";
+                    var cpuText = $"{result.HardwareInfo.Cpu.Name}, {result.HardwareInfo.Cpu.Count} CPU, {result.HardwareInfo.Cpu.NumberOfCores}/{result.HardwareInfo.Cpu.NumberOfLogicalProcessors} cores";
 
                     table.AddRow(systemText, cpuText, $"{result.Score} ({result.SingleCoreScore})");
                 }
