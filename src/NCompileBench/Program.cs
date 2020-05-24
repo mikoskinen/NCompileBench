@@ -223,7 +223,7 @@ namespace NCompileBench
                 var table = new ConsoleTable.Table();
                 table.SetHeaders("System", "CPU", "Score");
 
-                foreach (var result in results)
+                foreach (var result in results.OrderByDescending(x => x.Score))
                 {
                     var systemText = $"{result.HardwareInfo.SystemSku}";
 
