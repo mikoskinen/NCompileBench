@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
@@ -132,8 +132,8 @@ namespace NCompileBench
                         .Cast<ManagementObject>()
                         .First();
 
-                result.SystemFamily = (string) csp["Name"];
-                result.SystemSku = (string) csp["SKUNumber"];
+                result.SystemFamily = csp.TryGetValue<string>("Name");
+                result.SystemSku = csp.TryGetValue<string>("SKUNumber");
             }
         }
 
