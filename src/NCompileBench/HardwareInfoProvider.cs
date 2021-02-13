@@ -1,50 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
+using NCompileBench.Shared;
 
 namespace NCompileBench
 {
-    public class HardwareInfo
+    public class HardwareInfoProvider
     {
-        public string SystemFamily { get; set; }
-        public string SystemSku { get; set; }
-        public string Manufacturer { get; set; }
-        public string Model { get; set; }
-        public OsInfo OS { get; set; }
-        public CpuInfo Cpu { get; set; }
-        public string MotherBoard { get; set; }
-        public ulong Memory { get; set; }
-        public List<DriveInfo> Drives { get; set; }
-
-        public class DriveInfo
-        {
-            public string Name { get; set; }
-            public ulong Size { get; set; }
-        }
-
-        public class CpuInfo
-        {
-            public string Name { get; set; }
-            public uint Count { get; set; }
-            public uint SpeedMHz { get; set; }
-            public uint NumberOfCores { get; set; }
-            public uint NumberOfLogicalProcessors { get; set; }
-            public string Architecture { get; set; }
-        }
-
-        public class OsInfo
-        {
-            public string Name { get; set; }
-            public string Version { get; set; }
-            public string BuildNumber { get; set; }
-            public string Architecture { get; set; }
-        }
-
         public static HardwareInfo Get()
         {
             var result = new HardwareInfo();
-            
+
             SetCpuInfo(result);
             SetSystemInfo(result);
             SetOsInfo(result);
@@ -56,7 +23,7 @@ namespace NCompileBench
 
         private static void SetDriveInfo(HardwareInfo result)
         {
-            result.Drives = new List<DriveInfo>();
+            result.Drives = new List<HardwareInfo.DriveInfo>();
 
             var drives =
                 new ManagementObjectSearcher("select * from Win32_DiskDrive")
@@ -68,19 +35,15 @@ namespace NCompileBench
             {
                 return;
             }
-            
+
             foreach (var managementObject in drives)
             {
-                var drive = new DriveInfo
-                {
-                    Name = managementObject.GetValue<string>("Caption"),
-                    Size = managementObject.GetValue<ulong>("Size")
-                };
+                var drive = new HardwareInfo.DriveInfo { Name = managementObject.TryGetValue<string>("Caption"), Size = managementObject.TryGetValue<ulong>("Size") };
 
                 result.Drives.Add(drive);
             }
         }
-        
+
         private static void SetMotherBoardInfo(HardwareInfo result)
         {
             var baseBoardData =
@@ -89,7 +52,7 @@ namespace NCompileBench
                     .Cast<ManagementObject>()
                     .First();
 
-            result.MotherBoard = baseBoardData.GetValue<string>("Product");
+            result.MotherBoard = baseBoardData.TryGetValue<string>("Product");
         }
 
         private static void SetOsInfo(HardwareInfo result)
@@ -100,11 +63,11 @@ namespace NCompileBench
                     .Cast<ManagementObject>()
                     .First();
 
-            result.OS = new OsInfo()
+            result.OS = new HardwareInfo.OsInfo()
             {
-                Name = osData.GetValue<string>("Caption"),
-                Version = osData.GetValue<string>("Version"),
-                BuildNumber = osData.GetValue<string>("BuildNumber"),
+                Name = osData.TryGetValue<string>("Caption"),
+                Version = osData.TryGetValue<string>("Version"),
+                BuildNumber = osData.TryGetValue<string>("BuildNumber"),
                 Architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString()
             };
         }
@@ -117,12 +80,12 @@ namespace NCompileBench
                     .Cast<ManagementObject>()
                     .First();
 
-            result.Cpu.Count = csData.GetValue<uint>("NumberOfProcessors");
-            result.SystemFamily = csData.GetValue<string>("SystemFamily");
-            result.SystemSku = csData.GetValue<string>("SystemSKUNumber");
-            result.Memory = csData.GetValue<ulong>("TotalPhysicalMemory");
-            result.Manufacturer = csData.GetValue<string>("Manufacturer");
-            result.Model = csData.GetValue<string>("Model");
+            result.Cpu.Count = csData.TryGetValue<uint>("NumberOfProcessors");
+            result.SystemFamily = csData.TryGetValue<string>("SystemFamily");
+            result.SystemSku = csData.TryGetValue<string>("SystemSKUNumber");
+            result.Memory = csData.TryGetValue<ulong>("TotalPhysicalMemory");
+            result.Manufacturer = csData.TryGetValue<string>("Manufacturer");
+            result.Model = csData.TryGetValue<string>("Model");
 
             if (string.Equals(result.Manufacturer, "lenovo", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -145,14 +108,18 @@ namespace NCompileBench
                     .Cast<ManagementObject>()
                     .First();
 
-            var name = cpuData.GetValue<string>("Name")?.Trim();
-            var speedMHz = cpuData.GetValue<uint>("MaxClockSpeed");
-            var cores = cpuData.GetValue<uint>("NumberOfCores");
-            var threads = cpuData.GetValue<uint>("NumberOfLogicalProcessors");
+            var name = cpuData.TryGetValue<string>("Name")?.Trim();
+            var speedMHz = cpuData.TryGetValue<uint>("MaxClockSpeed");
+            var cores = cpuData.TryGetValue<uint>("NumberOfCores");
+            var threads = cpuData.TryGetValue<uint>("NumberOfLogicalProcessors");
 
-            var cpu = new CpuInfo()
+            var cpu = new HardwareInfo.CpuInfo()
             {
-                Name = name, SpeedMHz = speedMHz, NumberOfCores = cores, NumberOfLogicalProcessors = threads, Architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString()
+                Name = name,
+                SpeedMHz = speedMHz,
+                NumberOfCores = cores,
+                NumberOfLogicalProcessors = threads,
+                Architecture = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture.ToString()
             };
 
             result.Cpu = cpu;
