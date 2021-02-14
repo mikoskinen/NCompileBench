@@ -51,32 +51,32 @@ namespace NCompileBench
                     return;
                 }
                 
-                // Console.WriteLine("****");
-                // Console.WriteLine("Comparison results:");
-                //
-                // var results = JsonConvert.DeserializeObject<List<Result>>(content);
-                //
-                // foreach (var oldResult in results)
-                // {
-                //     oldResult.Id = Guid.NewGuid();
-                //     var json = JsonConvert.SerializeObject(oldResult);
-                //     
-                //     var encryptedScore = Encryptor.Encrypt(json);
-                //
-                //     var cloudEvent = CloudEventCreator.CreateJson(oldResult, 
-                //         new CloudEventCreationOptions()
-                //         {
-                //             EventTypeName = "ncompilebench.resultcreated",
-                //             AdditionalExtensions = new ICloudEventExtension[]
-                //             {
-                //                 new EncryptedKeyCloudEventExtension(encryptedScore.EncryptedKey),
-                //                 new EncryptedResultCloudEventExtension(encryptedScore.EncryptedText)
-                //             },
-                //             Source = new Uri($"http://ncompilebench.io/version/{_fileVersionInfo.ProductVersion}")
-                //         });
-                //
-                //     await DoSubmit(cloudEvent);
-                // }
+                Console.WriteLine("****");
+                Console.WriteLine("Comparison results:");
+                
+                var results = JsonConvert.DeserializeObject<List<Result>>(content);
+                
+                foreach (var oldResult in results)
+                {
+                    oldResult.Id = Guid.NewGuid();
+                    var json = JsonConvert.SerializeObject(oldResult);
+                    
+                    var encryptedScore = Encryptor.Encrypt(json);
+                
+                    var cloudEvent = CloudEventCreator.CreateJson(oldResult, 
+                        new CloudEventCreationOptions()
+                        {
+                            EventTypeName = "ncompilebench.resultcreated",
+                            AdditionalExtensions = new ICloudEventExtension[]
+                            {
+                                new EncryptedKeyCloudEventExtension(encryptedScore.EncryptedKey),
+                                new EncryptedResultCloudEventExtension(encryptedScore.EncryptedText)
+                            },
+                            Source = new Uri($"http://ncompilebench.io/version/{_fileVersionInfo.ProductVersion}")
+                        });
+                
+                    await DoSubmit(cloudEvent);
+                }
                 
                 var directoryName = Path.GetDirectoryName(typeof(Program).Assembly.Location);
                 var resultDirectory = Path.Combine(directoryName, "results");

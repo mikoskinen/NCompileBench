@@ -1,35 +1,41 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace NCompileBench.Backend.Infrastructure
 {
     public class BlobFileService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly string _containerName;
+        private readonly ILogger<BlobFileService> _logger;
 
-        public BlobFileService(BlobServiceClient blobServiceClient, IConfiguration configuration)
+        public BlobFileService(BlobServiceClient blobServiceClient, IConfiguration configuration, ILogger<BlobFileService> logger)
         {
-            _containerName = configuration["Storage:Container"];
+            // _containerName = configuration["Storage:Container"];
+            
             _blobServiceClient = blobServiceClient;
+            _logger = logger;
         }
 
-        private BlobClient GetBlobClient(string blobName)
+        private BlobClient GetBlobClient(string blobName, string containerName)
         {
-            var containerClient = GetContainerClient();
+            var containerClient = GetContainerClient(containerName);
             var blobClient = containerClient.GetBlobClient(blobName);
 
             return blobClient;
         }
 
-        private BlobContainerClient GetContainerClient()
+        private BlobContainerClient GetContainerClient(string containerName)
         {
-            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
 
             return containerClient;
         }
@@ -41,12 +47,13 @@ namespace NCompileBench.Backend.Infrastructure
             writer.Write(@string);
             writer.Flush();
             stream.Position = 0;
+
             return stream;
         }
 
-        public async Task<string> GetFileContentsAsync(string blobName)
+        public async Task<string> GetFileContentsAsync(string blobName, string containerName)
         {
-            var client = GetBlobClient(blobName);
+            var client = GetBlobClient(blobName, containerName);
 
             await using var stream = await client.OpenReadAsync();
             using var reader = new StreamReader(stream);
@@ -56,17 +63,47 @@ namespace NCompileBench.Backend.Infrastructure
             return fileContent;
         }
 
-        public async Task WriteFileContentsAsync(string blobName, string contents)
+        public async Task<string> SaveBlob(string blobName, string containerName, string contents, Dictionary<string, string> metadata = null)
         {
-            var client = GetBlobClient(blobName);
+            var client = GetBlobClient(blobName, containerName);
+            
+            try
+            {
+                // Save the result with result details as metadata
+                await using var stream = CreateStreamFromString(contents);
 
-            await using var stream = CreateStreamFromString(contents);
-            await client.UploadAsync(stream, true);
+                await client.UploadAsync(
+                    stream,
+                    new BlobHttpHeaders { ContentType = "application/json" },
+                    conditions: null, metadata: metadata);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to store file with name {BlobName}", blobName);
+
+                try
+                {
+                    // Try to store without metadata
+                    await using var stream = CreateStreamFromString(contents);
+                    await client.UploadAsync(
+                        stream,
+                        new BlobHttpHeaders { ContentType = "application/json" },
+                        conditions: null);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to store file with name {BlobName} and without metadata. Abandon the result", blobName);
+
+                    throw;
+                }
+            }
+            
+            return client.Uri.ToString();
         }
-        
-        public async IAsyncEnumerable<string> GetContainerFiles([EnumeratorCancellation] CancellationToken cancellationToken)
+
+        public async IAsyncEnumerable<string> GetContainerFiles([EnumeratorCancellation] CancellationToken cancellationToken, string containerName)
         {
-            var client = GetContainerClient();
+            var client = GetContainerClient(containerName);
 
             var blobs = client.GetBlobsAsync(cancellationToken: cancellationToken);
 

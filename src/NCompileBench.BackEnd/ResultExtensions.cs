@@ -18,6 +18,8 @@ namespace NCompileBench.Backend
             var cpuText =
                 $"{scoreResult.HardwareInfo.Cpu.Name}_{scoreResult.HardwareInfo.Cpu.Count}_{scoreResult.HardwareInfo.Cpu.NumberOfCores}_{scoreResult.HardwareInfo.Cpu.NumberOfLogicalProcessors}";
 
+            // We want to order the blobs in descending order by score to make it easier to fetch highest scores.
+            // The code below tries to make sure that the higher the score, the "smaller" the filename is.
             var filename =
                 $"result_{-100000000+scoreResult.Score:0000000000}_{-100000000+scoreResult.SingleCoreScore:0000000000}_{scoreResult.BenchmarkDate.ToString(CultureInfo.InvariantCulture)}_{systemText}_{cpuText}_{scoreResult.Id.ToString().Replace("-", "")}.json";
             var result = Uri.EscapeDataString(filename);
