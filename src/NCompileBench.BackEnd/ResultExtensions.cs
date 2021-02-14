@@ -2,7 +2,7 @@
 using System.Globalization;
 using NCompileBench.Shared;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend
 {
     public static class ResultExtensions
     {

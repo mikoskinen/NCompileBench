@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NCompileBench.Backend.Infrastructure;
 using NCompileBench.Shared;
 using Newtonsoft.Json;
 using Weikio.EventFramework.Abstractions;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend
 {
     public class ResultHandler
     {

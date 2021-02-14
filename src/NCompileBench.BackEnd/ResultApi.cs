@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using NCompileBench.Backend.Infrastructure;
 using NCompileBench.Shared;
 using Newtonsoft.Json;
-using Weikio.EventFramework.Abstractions;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend
 {
     public class ResultApi
     {

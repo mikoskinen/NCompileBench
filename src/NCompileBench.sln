@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench", "NCompileBench\NCompileBench.csproj", "{25A32FBC-099D-4F75-995F-73BDF68F853A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench.BackEnd", "NCompileBench.BackEnd\NCompileBench.BackEnd.csproj", "{5B457325-5F18-4ED7-89F8-BCEB79D29576}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench.Backend", "NCompileBench.Backend\NCompileBench.Backend.csproj", "{5B457325-5F18-4ED7-89F8-BCEB79D29576}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench.Shared", "NCompileBench.Shared\NCompileBench.Shared.csproj", "{90FAA68A-EC77-45D1-BF02-3EC83F7F813F}"
 EndProject

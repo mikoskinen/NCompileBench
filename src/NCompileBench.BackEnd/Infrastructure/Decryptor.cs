@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend.Infrastructure
 {
     public class Decryptor
     {

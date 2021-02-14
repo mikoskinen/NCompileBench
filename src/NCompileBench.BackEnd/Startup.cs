@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NCompileBench.Backend.Infrastructure;
 using Weikio.ApiFramework.AspNetCore;
 using Weikio.ApiFramework.AspNetCore.StarterKit;
 using Weikio.EventFramework.AspNetCore.Extensions;
 using Weikio.EventFramework.EventGateway.Http;
 using Weikio.EventFramework.Extensions.EventAggregator;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend
 {
     public class Startup
     {
@@ -29,12 +30,12 @@ namespace NCompileBench.BackEnd
             services.AddSingleton(new BlobServiceClient(_configuration["Storage:ConnectionString"]));
             services.AddSingleton<BlobFileService>();
 
+            services.AddApiFrameworkWithAdmin()
+                .AddApi<ResultApi>("/results");
+            
             services.AddEventFramework()
                 .AddHttpGateway()
                 .AddHandler<ResultHandler>();
-            
-            services.AddApiFrameworkWithAdmin()
-                .AddApi<ResultApi>("/results");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

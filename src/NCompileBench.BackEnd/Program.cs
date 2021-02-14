@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend
 {
     public class Program
     {

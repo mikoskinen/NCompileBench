@@ -5,9 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
-using NCompileBench.Shared;
 
-namespace NCompileBench.BackEnd
+namespace NCompileBench.Backend.Infrastructure
 {
     public class BlobFileService
     {
