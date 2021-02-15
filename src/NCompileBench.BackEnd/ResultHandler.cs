@@ -39,13 +39,13 @@ namespace NCompileBench.Backend
                 var encryptedResult = cloudEvent.GetAttributes().Single(x => x.Key == EncryptedResultCloudEventExtension.EncryptedResultExtension).Value
                     .ToString();
 
-                Result result;
-                string plainResultString;
+                // In the future we may get multiple results, one for each supported platform
+                List<Result> results;
 
                 try
                 {
-                    plainResultString = _decryptor.Decrypt(encryptedResult, encryptedKey);
-                    result = JsonConvert.DeserializeObject<Result>(plainResultString);
+                    var plainResultsString = _decryptor.Decrypt(encryptedResult, encryptedKey);
+                    results = JsonConvert.DeserializeObject<List<Result>>(plainResultsString);
                 }
                 catch (Exception e)
                 {
@@ -55,16 +55,21 @@ namespace NCompileBench.Backend
                     throw new Exception("Failed to decrypt result", e);
                 }
 
-                _logger.LogDebug("Decrypted results OK");
-                var fileName = result.ToFileName();
+                _logger.LogDebug("Decrypted results OK. Received results for {PlatformCount} different platforms", results.Count);
 
-                _logger.LogDebug("Generated file name {FileName} from result", fileName);
+                // Save each result separately
+                foreach (var result in results)
+                {
+                    var fileName = result.ToFileName();
 
-                // Store score and details as metadata to allow easier search in the future
-                var (sanitizedMetadata, originalMetadata) = GetMetadata(result);
+                    _logger.LogDebug("Generated file name {FileName} from result", fileName);
 
-                var resultFileName = await SaveResult(fileName, plainResultString, sanitizedMetadata);
-                await SaveMetadata(fileName, originalMetadata, resultFileName);
+                    // Store score and details as metadata to allow easier search in the future
+                    var (sanitizedMetadata, originalMetadata) = GetMetadata(result);
+
+                    var resultFileName = await SaveResult(fileName, JsonConvert.SerializeObject(result, Formatting.Indented), sanitizedMetadata);
+                    await SaveMetadata(fileName, originalMetadata, resultFileName);
+                }
             }
             catch (Exception e)
             {

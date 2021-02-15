@@ -59,11 +59,15 @@ namespace NCompileBench
                 foreach (var oldResult in results)
                 {
                     oldResult.Id = Guid.NewGuid();
-                    var json = JsonConvert.SerializeObject(oldResult);
+                    oldResult.Platform = "X64";
+                    oldResult.Runtime = "netcoreapp3.1";
+                    var oldResultList = new List<Result>() { oldResult };
+                    
+                    var json = JsonConvert.SerializeObject(oldResultList);
                     
                     var encryptedScore = Encryptor.Encrypt(json);
                 
-                    var cloudEvent = CloudEventCreator.CreateJson(oldResult, 
+                    var cloudEvent = CloudEventCreator.CreateJson(oldResultList, 
                         new CloudEventCreationOptions()
                         {
                             EventTypeName = "ncompilebench.resultcreated",
@@ -265,8 +269,13 @@ namespace NCompileBench
             try
             {
                 var hwInfo = HardwareInfoProvider.Get();
-                var result = new Result(hwInfo, scoreMulti, scoreSingle);
+                
+                // Platform and runtime are currently hard coded in the benchmark
+                var platformResult = new Result(hwInfo, "X64", "netcoreapp3.1", scoreMulti, scoreSingle);
 
+                // But in the future we may want to run the benchmark for multiple platforms (X64, ARM)
+                // Use List of results when transferring data between the app and the backend
+                var result = new List<Result>() { platformResult };
                 var json = JsonConvert.SerializeObject(result, Formatting.Indented);
                 
                 var encryptedScore = Encryptor.Encrypt(json);

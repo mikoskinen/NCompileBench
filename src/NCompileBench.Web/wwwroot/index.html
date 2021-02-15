@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>NCompileBench.io</title>
+    <base href="/"/>
+    <link href="/assets/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/docs.min.css" rel="stylesheet">
+    <link href="/assets/prism.css" rel="stylesheet">
+    <link href="/assets/simpleLightbox.min.css" rel="stylesheet">
+    <link href="/assets/theme.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet"/>
+    <link href="NCompileBench.Web.styles.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet"/>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+
+<script>
+    function DataTablesAdd(table) {
+        $(document).ready(function () {
+            $(table).DataTable({
+                "lengthChange": false,
+                "info": false,
+                "paging": false,
+                "order": [[4, "desc"]]
+            });
+        });
+    }
+
+    function DataTablesRemove(table) {
+        $(document).ready(function () {
+            $(table).DataTable().destroy();
+            // Removes the datatable wrapper from the dom.
+            var elem = document.querySelector(table + '_wrapper');
+            elem.parentNode.removeChild(elem);
+        });
+    }
+</script>
+
+<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar bd-fix">
+
+    <a class="navbar-brand mr-0 mr-md-2" href="#"><img src="/logo_36.png" width="36" height="36" alt="logo"
+                                                       class="d-block" viewBox="0 0 612 612"
+                                                       role="img" focusable="false"/></a>
+
+    <div class="navbar-nav-scroll">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link" href="#">NCompileBench.io</a>
+            </li>
+        </ul>
+    </div>
+
+    <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+        <li class="nav-item">
+            <a class="nav-link p-2" href="https://github.com/mikoskinen/NCompileBench" target="_blank" rel="noopener">Project
+                Home</a>
+        </li>
+    </ul>
+</header>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <button class="btn btn-link bd-search-docs-toggle d-md-none p-0 collapsed" type="button"
+                    data-toggle="collapse" data-target="#bd-docs-nav" aria-controls="bd-docs-nav" aria-expanded="false"
+                    aria-label="Toggle docs navigation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"
+                     focusable="false"><title>Menu</title>
+                    <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"
+                          d="M4 7h22M4 15h22M4 23h22"></path>
+                </svg>
+            </button>
+            <nav class="collapse bd-links" id="bd-docs-nav">
+
+                <div class="bd-toc-item active">
+                    <a class="bd-toc-link" href="#">
+                        Home
+                    </a>
+
+                    <ul class="nav bd-sidenav">
+                        <li class="active">
+                            <a href="#">
+                                Getting started
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#">
+                                Help
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+            <h1 class="bd-title" id="content">NCompileBench</h1>
+            <p class="bd-lead">How fast can your computer compile .NET code? Find out! NCompileBench is a benchmark
+                which compiles .NET Core 3.1 based C#-code. The benchmark runs the benchmark as concurrent and
+                non-concurrent, but the NCompileBench Score is based on the concurrent result.</p>
+            <div class="row">
+                <div class="col">
+                    <h3>Getting started</h3>
+                    <p>NCompileBench is available as dotnet global tool. To install:</p>
+
+                    <code class="language-markup">
+                        dotnet tool install -g NCompileBench
+                    </code>
+                    <p><br/>After installing NCompileBench, it is available for running through the command line:</p>
+                    <code class="language-markup">
+                        NCompileBench
+                    </code>
+                    <p><br/>Note that the benchmark starts automatically.</p>
+                </div>
+                <div class="col">
+                    <h3>Requirements</h3>
+                    <p>.NET Core 3.1 SDK is required in order to run the benchmark.                    You can download it from <a
+                        href="https://dotnet.microsoft.com/download/dotnet-core/3.1">https://dotnet.microsoft.com/download/dotnet-core/3.1</a>. <p>x64 compatible Windows is required.</p>
+                </div>
+            </div>
+            <div id="app">Loading...</div>
+
+            <div id="blazor-error-ui">
+                An unhandled error has occurred.
+                <a href="" class="reload">Reload</a>
+                <a class="dismiss">🗙</a>
+            </div>
+        </main>
+
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <footer class="bd-footer text-muted">
+                <div class="p-4">
+                    <p>Footer juttuja</p>
+                    <p>Documentation built with <a target="_blank" href="https://www.grazedocs.io">NCompileBench.io</a>.
+                        <a target="_blank" href="https://getbootstrap.com/docs/4.3/assets/css/docs.min.css">"Bootstrap
+                            Docs"</a> theme by Twitter is licensed under <a
+                            href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="license noopener">CC
+                            BY 3.0</a></p>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+
+
+<script src="_framework/blazor.webassembly.js"></script>
+<script src="/assets/popper.min.js"></script>
+<script src="/assets/bootstrap.min.js"></script>
+<script src="/assets/prism.js"></script>
+</body>
+
+</html>

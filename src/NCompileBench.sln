@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench.Backend", "NC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench.Shared", "NCompileBench.Shared\NCompileBench.Shared.csproj", "{90FAA68A-EC77-45D1-BF02-3EC83F7F813F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCompileBench.Web", "NCompileBench.Web\NCompileBench.Web.csproj", "{B2FA5EFE-C149-4C19-9B3C-78AB43470792}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{90FAA68A-EC77-45D1-BF02-3EC83F7F813F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90FAA68A-EC77-45D1-BF02-3EC83F7F813F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90FAA68A-EC77-45D1-BF02-3EC83F7F813F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2FA5EFE-C149-4C19-9B3C-78AB43470792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2FA5EFE-C149-4C19-9B3C-78AB43470792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2FA5EFE-C149-4C19-9B3C-78AB43470792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2FA5EFE-C149-4C19-9B3C-78AB43470792}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

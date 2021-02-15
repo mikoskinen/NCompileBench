@@ -21,7 +21,7 @@ namespace NCompileBench.Backend
             // We want to order the blobs in descending order by score to make it easier to fetch highest scores.
             // The code below tries to make sure that the higher the score, the "smaller" the filename is.
             var filename =
-                $"result_{-100000000+scoreResult.Score:0000000000}_{-100000000+scoreResult.SingleCoreScore:0000000000}_{scoreResult.BenchmarkDate.ToString(CultureInfo.InvariantCulture)}_{systemText}_{cpuText}_{scoreResult.Id.ToString().Replace("-", "")}.json";
+                $"result_{scoreResult.Platform}_{scoreResult.Runtime}_{-100000000+scoreResult.Score:0000000000}_{-100000000+scoreResult.SingleCoreScore:0000000000}_{scoreResult.BenchmarkDate.ToString(CultureInfo.InvariantCulture)}_{systemText}_{cpuText}_{scoreResult.Id.ToString().Replace("-", "")}.json";
             var result = Uri.EscapeDataString(filename);
 
             return result;
@@ -35,15 +35,17 @@ namespace NCompileBench.Backend
             
             var parts = unescapedFileName.Split('_');
 
-            result.Score = 100000000 - Convert.ToInt32(parts[1].TrimStart('-').TrimStart('0'));
-            result.SingleCoreScore = 100000000- Convert.ToInt32(parts[2].TrimStart('-').TrimStart('0'));
-            result.BenchmarkDate =DateTimeOffset.Parse(parts[3], CultureInfo.InvariantCulture);
-            result.System = parts[4];
-            result.CpuName = parts[5];
-            result.CpuCount = Convert.ToInt32(parts[6]);
-            result.CoreCount = Convert.ToInt32(parts[7]);
-            result.LogicalCoreCount = Convert.ToInt32(parts[8]);
-            result.Id = Guid.ParseExact(parts[9], "N");
+            result.Platform = parts[1];
+            result.Runtime = parts[2];
+            result.Score = 100000000 - Convert.ToInt32(parts[3].TrimStart('-').TrimStart('0'));
+            result.SingleCoreScore = 100000000- Convert.ToInt32(parts[4].TrimStart('-').TrimStart('0'));
+            result.BenchmarkDate =DateTimeOffset.Parse(parts[5], CultureInfo.InvariantCulture);
+            result.System = parts[6];
+            result.CpuName = parts[7];
+            result.CpuCount = Convert.ToInt32(parts[8]);
+            result.CoreCount = Convert.ToInt32(parts[9]);
+            result.LogicalCoreCount = Convert.ToInt32(parts[10]);
+            result.Id = Guid.ParseExact(parts[11], "N");
             result.ResultFileName = fileName;
             
             return result;
