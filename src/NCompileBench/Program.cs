@@ -41,46 +41,6 @@ namespace NCompileBench
                 Console.WriteLine($"Uses BenchmarkDotNet: https://github.com/dotnet/BenchmarkDotNet (MIT)");
                 Console.WriteLine($"Compiles source code available from https://github.com/dotnet/roslyn/releases/tag/perf-assets-v1");
                 Console.WriteLine("****");
-
-                var comparisonUrl =
-                    $"https://gist.githubusercontent.com/mikoskinen/2560a85bc59ef6baad20d371ab0db6f2/raw/NCompileBench%2520Json%2520Results?time={DateTime.Now.Ticks}";
-                var content = await new HttpClient().GetStringAsync(comparisonUrl);
-                
-                if (string.IsNullOrWhiteSpace(content))
-                {
-                    return;
-                }
-                
-                Console.WriteLine("****");
-                Console.WriteLine("Comparison results:");
-                
-                var results = JsonConvert.DeserializeObject<List<Result>>(content);
-                
-                foreach (var oldResult in results)
-                {
-                    oldResult.Id = Guid.NewGuid();
-                    oldResult.Platform = "X64";
-                    oldResult.Runtime = "netcoreapp3.1";
-                    var oldResultList = new List<Result>() { oldResult };
-                    
-                    var json = JsonConvert.SerializeObject(oldResultList);
-                    
-                    var encryptedScore = Encryptor.Encrypt(json);
-                
-                    var cloudEvent = CloudEventCreator.CreateJson(oldResultList, 
-                        new CloudEventCreationOptions()
-                        {
-                            EventTypeName = "ncompilebench.resultcreated",
-                            AdditionalExtensions = new ICloudEventExtension[]
-                            {
-                                new EncryptedKeyCloudEventExtension(encryptedScore.EncryptedKey),
-                                new EncryptedResultCloudEventExtension(encryptedScore.EncryptedText)
-                            },
-                            Source = new Uri($"http://ncompilebench.io/version/{_fileVersionInfo.ProductVersion}")
-                        });
-                
-                    await DoSubmit(cloudEvent);
-                }
                 
                 var directoryName = Path.GetDirectoryName(typeof(Program).Assembly.Location);
                 var resultDirectory = Path.Combine(directoryName, "results");
@@ -244,7 +204,7 @@ namespace NCompileBench
 
         private static async Task DoSubmit(string lastScore)
         {
-            var url = "https://backend.ncompilebench.io/api/events";
+            var url = "https://ncompilebench.azurewebsites.net/api/events";
 
             if (Environment.GetEnvironmentVariable("NCOMPILEBENCH_BACKEND") != null)
             {
