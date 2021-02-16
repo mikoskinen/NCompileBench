@@ -1,0 +1,67 @@
+﻿@page "/"
+@using NCompileBench.Web.Infastructure
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
+<h2>Current Top Results</h2>
+@if (_isBusy)
+{
+    <div class="spinner-border text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+else
+{
+    <table class="table table-striped" id="resultTable">
+        <thead>
+        <tr>
+            <th>System</th>
+            <th>CPU</th>
+            <th>CPUs</th>
+            <th>Cores</th>
+            <th>MT Score</th>
+            <th>ST Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var result in _results)
+        {
+            <tr>
+                <td>@result.System</td>
+                <td>@result.CpuName</td>
+                <td>@result.CpuCount</td>
+                <td>@result.CoreCount / @result.LogicalCoreCount</td>
+                <td>@result.Score</td>
+                <td>@result.SingleCoreScore</td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+}
+
+
+@code
+{
+    [Inject]
+    private ResultClient Client { get; set; }
+
+    private readonly List<ResultSummary> _results = new();
+    private bool _isBusy { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isBusy = true;
+
+        var resultSummaries = await Client.GetTopResultsAsync();
+        _results.AddRange(resultSummaries);
+
+        await JSRuntime.InvokeAsync<object>("DataTablesAdd", "#resultTable");
+        _isBusy = false;
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeAsync<object>("DataTablesRemove", "#resultTable");
+    }
+}
