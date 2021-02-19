@@ -17,7 +17,12 @@ namespace NCompileBench.Web
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddHttpClient<ResultClient>(options =>
             {
-                options.BaseAddress = new Uri(builder.Configuration["BackendUrl"]);
+                // For some reason the production configuration is not correctly loaded, so hard code these based on the release/debug configs
+                #if DEBUG
+                options.BaseAddress = new Uri("https://localhost:5001");
+                #else
+                options.BaseAddress = new Uri("https://ncompilebench.azurewebsites.net");
+                #endif
             });
             
             await builder.Build().RunAsync();

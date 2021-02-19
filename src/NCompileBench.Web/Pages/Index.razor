@@ -76,7 +76,7 @@ else
         }
         catch (Exception e)
         {
-            _status = $"$Failed to load top scores. Environment: {HostEnvironment.Environment}. Backend url: {Configuration["BackendUrl"]}. Client backend url: {Client.BaseUrl}";
+            _status = $"Failed to load top scores. Environment: {HostEnvironment.Environment}. Backend url: {Configuration["BackendUrl"]}. Client backend url: {Client.BaseUrl}";
         }
         
         _isBusy = false;
