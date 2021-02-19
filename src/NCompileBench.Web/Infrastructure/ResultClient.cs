@@ -17,7 +17,6 @@ namespace NCompileBench.Web.Infastructure
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.8.2.0 (NJsonSchema v10.2.1.0 (Newtonsoft.Json v11.0.0.0))")]
     public partial class ResultClient 
     {
-        private string _baseUrl = "https://localhost:5001";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
@@ -36,8 +35,8 @@ namespace NCompileBench.Web.Infastructure
     
         public string BaseUrl 
         {
-            get { return _baseUrl; }
-            set { _baseUrl = value; }
+            get { return _httpClient.BaseAddress.ToString(); }
+            set { _httpClient.BaseAddress = new System.Uri(value); }
         }
     
         protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }

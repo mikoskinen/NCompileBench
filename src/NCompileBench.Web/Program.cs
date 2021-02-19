@@ -14,15 +14,10 @@ namespace NCompileBench.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddHttpClient<ResultClient>(options =>
             {
-                // For some reason the production configuration is not correctly loaded, so hard code these based on the release/debug configs
-                #if DEBUG
-                options.BaseAddress = new Uri("https://localhost:5001");
-                #else
-                options.BaseAddress = new Uri("https://ncompilebench.azurewebsites.net");
-                #endif
+                options.BaseAddress = new Uri(builder.Configuration["BackendUrl"]);
             });
             
             await builder.Build().RunAsync();
