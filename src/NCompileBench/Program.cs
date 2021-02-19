@@ -35,6 +35,7 @@ namespace NCompileBench
                 Console.WriteLine($"Run with -scores to view the online results without running the benchmark");
                 Console.WriteLine($"Run with -nomaxiterations to get even more accurate results. Please view readme for more details");
                 Console.WriteLine("****");
+                Console.WriteLine($"Results and help available from: https://www.ncompilebench.io");
                 Console.WriteLine($"Created by Mikael Koskinen: https://mikaelkoskinen.net");
                 Console.WriteLine($"Source code available from https://github.com/mikoskinen/NCompileBench (MIT)");
                 Console.WriteLine($"Based on .NET Performance repository: https://github.com/dotnet/performance by Microsoft (MIT)");
@@ -326,6 +327,8 @@ namespace NCompileBench
                 }
 
                 Console.WriteLine(table);
+                Console.WriteLine("****");
+                Console.WriteLine("More results are available from https://www.ncompilebench.io");
             }
             catch (Exception)
             {
