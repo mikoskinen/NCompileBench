@@ -69,6 +69,14 @@ else
         
         try
         {
+
+    // For some reason the production configuration is not correctly loaded, so hard code these based on the release/debug configs
+#if DEBUG
+            Client.BaseUrl = "https://localhost:5001";
+#else
+            Client.BaseUrl = "https://ncompilebench.azurewebsites.net";
+#endif
+            
             var resultSummaries = await Client.GetTopResultsAsync();
             _results.AddRange(resultSummaries);
 
