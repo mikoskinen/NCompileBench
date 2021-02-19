@@ -8,7 +8,7 @@ namespace NCompileBench
     {
         public static (string EncryptedText, string EncryptedKey) Encrypt(string textToEncrypt)
         {
-            var currentDir = Environment.CurrentDirectory;
+            var currentDir = typeof(Encryptor).Assembly.Location;
             var keyPath = Path.Combine(currentDir, "public.key");
             
             var publicKeyString = File.ReadAllText(keyPath);
