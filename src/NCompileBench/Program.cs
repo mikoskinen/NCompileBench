@@ -158,11 +158,14 @@ namespace NCompileBench
                     return;
                 }
 
-                var resultObject = JObject.Parse(lastScore);
-
-                if (resultObject.ContainsKey("id") == false)
+                try
+                {
+                    var resultObject = JArray.Parse(lastScore);
+                }
+                catch (Exception)
                 {
                     Console.WriteLine("The scores from the previous version aren't compatible with the latest version of NCompileBench. Please update to the latest version");
+
                     return;
                 }
 

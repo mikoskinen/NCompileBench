@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <!--    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>ncompilebench</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -9,12 +8,13 @@
     <Authors>Mikael Koskinen</Authors>
     <Description>Compilation benchmark for Windows. How fast can your computer compile .NET code?</Description>
     <Product>NCompileBench</Product>
+    <PackageProjectUrl>https://www.ncompilebench.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mikoskinen/NCompileBench</RepositoryUrl>
     <Copyright>2020 Mikael Koskinen</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
-    <Version>2.0.2-alpha.0.1</Version>
+    <Version>2.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.2.0" />
