@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using NCompileBench.Web.Infastructure
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using Microsoft.Extensions.Configuration
 @inject IJSRuntime JSRuntime
 @implements IDisposable
 
@@ -54,6 +55,9 @@ else
     [Inject]
     private IWebAssemblyHostEnvironment HostEnvironment { get; set; }
 
+    [Inject]
+    private IConfiguration Configuration { get; set; }
+    
     private readonly List<ResultSummary> _results = new();
     private bool _isBusy { get; set; }
     private string _status = string.Empty;
@@ -72,7 +76,7 @@ else
         }
         catch (Exception e)
         {
-            _status = "Failed to load top scores. Environment: " + HostEnvironment.Environment;
+            _status = $"$Failed to load top scores. Environment: {HostEnvironment.Environment}. Backend url: {Configuration["BackendUrl"]}. Client backend url: {Client.BaseUrl}";
         }
         
         _isBusy = false;
