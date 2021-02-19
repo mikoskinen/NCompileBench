@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using NCompileBench.Web.Infastructure
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inject IJSRuntime JSRuntime
 @implements IDisposable
 
@@ -9,6 +10,10 @@
     <div class="spinner-border text-warning" role="status">
         <span class="sr-only">Loading...</span>
     </div>
+}
+else if (!string.IsNullOrWhiteSpace(_status))
+{
+    <p class="alert alert-warning">@_status</p>
 }
 else
 {
@@ -46,17 +51,30 @@ else
     [Inject]
     private ResultClient Client { get; set; }
 
+    [Inject]
+    private IWebAssemblyHostEnvironment HostEnvironment { get; set; }
+
     private readonly List<ResultSummary> _results = new();
     private bool _isBusy { get; set; }
+    private string _status = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         _isBusy = true;
+        _status = string.Empty;
+        
+        try
+        {
+            var resultSummaries = await Client.GetTopResultsAsync();
+            _results.AddRange(resultSummaries);
 
-        var resultSummaries = await Client.GetTopResultsAsync();
-        _results.AddRange(resultSummaries);
-
-        await JSRuntime.InvokeAsync<object>("DataTablesAdd", "#resultTable");
+            await JSRuntime.InvokeAsync<object>("DataTablesAdd", "#resultTable");
+        }
+        catch (Exception e)
+        {
+            _status = "Failed to load top scores. Environment: " + HostEnvironment.Environment;
+        }
+        
         _isBusy = false;
     }
 
